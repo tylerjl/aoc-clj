@@ -43,7 +43,3 @@
 (part1 "resources/day2")
 
 (part2 "resources/day2")
-
-(solve "1-3 a: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc\n" policy-one)
-
-(solve "1-3 a: abcde\n1-3 b: cdefg\n2-9 c: ccccccccc\n" policy-two)
