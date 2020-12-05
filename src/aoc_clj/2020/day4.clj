@@ -59,7 +59,3 @@
   (->> (shape content)
        (filter (every-pred fields-provided? #(every? is-valid? %)))
        (count)))
-
-(part1 (slurp "resources/day4"))
-
-(part2 (slurp "resources/day4"))

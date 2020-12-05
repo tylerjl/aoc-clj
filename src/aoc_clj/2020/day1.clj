@@ -20,7 +20,3 @@
   "Solves part 2."
   [filepath]
   (solve 3 (map read-string (clojure.string/split-lines (slurp filepath)))))
-
-(part1 "resources/day1")
-
-(part2 "resources/day1")

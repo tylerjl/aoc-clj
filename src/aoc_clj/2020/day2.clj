@@ -39,7 +39,3 @@
   "Solves part 2."
   [filepath]
   (solve (slurp filepath) policy-two))
-
-(part1 "resources/day2")
-
-(part2 "resources/day2")

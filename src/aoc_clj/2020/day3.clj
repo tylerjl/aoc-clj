@@ -43,7 +43,3 @@
    (solve 1 7 (clojure.string/split-lines (slurp filepath)))
    (solve 2 1 (clojure.string/split-lines (slurp filepath))))
   )
-
-(part1 "resources/day3")
-
-(part2 "resources/day3")
