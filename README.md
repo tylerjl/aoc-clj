@@ -7,6 +7,16 @@ May elicit bleeding from the eyes.
 
 ## Usage
 
+Prerequisites
+- leiningen
+
+```
+$ lein run -- --help
+$ lein run -- day1 part1 resources/day1
+```
+
+## Testing
+
 ```
 $ make test
 ```
