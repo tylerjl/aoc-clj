@@ -3,6 +3,7 @@
             [aoc-clj.2020.day2 :as day2]
             [aoc-clj.2020.day3 :as day3]
             [aoc-clj.2020.day4 :as day4]
+            [aoc-clj.2020.day5 :as day5]
             [clojure.tools.cli :refer [parse-opts]])
   (:gen-class))
 
@@ -25,5 +26,7 @@
                                    ["day3" "part2"] (println (day3/part2 file))
                                    ["day4" "part1"] (println (day4/part1 (slurp file)))
                                    ["day4" "part2"] (println (day4/part2 (slurp file)))
+                                   ["day5" "part1"] (println (day5/part1 (slurp file)))
+                                   ["day5" "part2"] (println (day5/part2 (slurp file)))
                                    (println "Unimplemented.")))
       :else (println "Unknown command. Usage:\n" usage summary))))
