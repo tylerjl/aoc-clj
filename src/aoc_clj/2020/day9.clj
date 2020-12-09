@@ -12,10 +12,10 @@
 
 (defn part1
   "Solves part 1."
-  [preamble content]
-  (find-outlier preamble (mapv read-string (str/split-lines content))))
+  ([preamble content] (find-outlier preamble (mapv read-string (str/split-lines content))))
+  ([content] (find-outlier 25 (mapv read-string (str/split-lines content)))))
 
-(defn part2
+(defn part2-internal
   "Solves part 2."
   [preamble content]
   (let [input (mapv read-string (str/split-lines content))
@@ -24,3 +24,7 @@
       (if-let [contiguous (some #(and (= needle (apply + %)) %) (partition span 1 input))]
         (+ (apply min contiguous) (apply max contiguous))
         (recur (inc span))))))
+
+(defn part2
+  ([preamble content] (part2-internal preamble content))
+  ([content] (part2-internal 25 content)))

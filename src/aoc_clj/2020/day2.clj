@@ -32,10 +32,10 @@
 
 (defn part1
   "Solves part 1."
-  [filepath]
-  (solve (slurp filepath) policy-one))
+  [content]
+  (solve content policy-one))
 
 (defn part2
   "Solves part 2."
-  [filepath]
-  (solve (slurp filepath) policy-two))
+  [content]
+  (solve content policy-two))

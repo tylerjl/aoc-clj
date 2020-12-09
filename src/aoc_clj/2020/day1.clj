@@ -13,10 +13,10 @@
 
 (defn part1
   "Solves part 1."
-  [filepath]
-  (solve 2 (map read-string (clojure.string/split-lines (slurp filepath)))))
+  [content]
+  (solve 2 (map read-string (clojure.string/split-lines content))))
 
 (defn part2
   "Solves part 2."
-  [filepath]
-  (solve 3 (map read-string (clojure.string/split-lines (slurp filepath)))))
+  [content]
+  (solve 3 (map read-string (clojure.string/split-lines content))))

@@ -1,44 +1,33 @@
 (ns aoc-clj.core
-  (:require [aoc-clj.2020.day1 :as day1]
-            [aoc-clj.2020.day2 :as day2]
-            [aoc-clj.2020.day3 :as day3]
-            [aoc-clj.2020.day4 :as day4]
-            [aoc-clj.2020.day5 :as day5]
-            [aoc-clj.2020.day6 :as day6]
-            [aoc-clj.2020.day7 :as day7]
-            [aoc-clj.2020.day8 :as day8]
-            [aoc-clj.2020.day9 :as day9]
-            [clojure.tools.cli :refer [parse-opts]])
+  (:require [clojure.tools.cli :refer [parse-opts]]
+            [aoc-clj.2020.day1]
+            [aoc-clj.2020.day2]
+            [aoc-clj.2020.day3]
+            [aoc-clj.2020.day4]
+            [aoc-clj.2020.day5]
+            [aoc-clj.2020.day6]
+            [aoc-clj.2020.day7]
+            [aoc-clj.2020.day8]
+            [aoc-clj.2020.day9])
   (:gen-class))
 
 (def cli-opts
-  [["-h" "--help" "Help text"]])
+  [["-h" "--help" "Help text"]
+   ["-m" "--measure" "Measure function execution time (without executable startup)"]])
 
 (def usage "\n\tday<number> part<number> <path to challenge input>\n\n")
 
 (defn -main [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-opts)]
-    (cond
-      (get options :help) (println usage summary)
-      (== 3 (count arguments)) (let [[day part file] arguments]
-                                 (case [day part]
-                                   ["day1" "part1"] (println (day1/part1 file))
-                                   ["day1" "part2"] (println (day1/part2 file))
-                                   ["day2" "part1"] (println (day2/part1 file))
-                                   ["day2" "part2"] (println (day2/part2 file))
-                                   ["day3" "part1"] (println (day3/part1 file))
-                                   ["day3" "part2"] (println (day3/part2 file))
-                                   ["day4" "part1"] (println (day4/part1 (slurp file)))
-                                   ["day4" "part2"] (println (day4/part2 (slurp file)))
-                                   ["day5" "part1"] (println (day5/part1 (slurp file)))
-                                   ["day5" "part2"] (println (day5/part2 (slurp file)))
-                                   ["day6" "part1"] (println (day6/part1 (slurp file)))
-                                   ["day6" "part2"] (println (day6/part2 (slurp file)))
-                                   ["day7" "part1"] (println (day7/part1 (slurp file)))
-                                   ["day7" "part2"] (println (day7/part2 (slurp file)))
-                                   ["day8" "part1"] (println (day8/part1 (slurp file)))
-                                   ["day8" "part2"] (println (day8/part2 (slurp file)))
-                                   ["day9" "part1"] (println (day9/part1 25 (slurp file)))
-                                   ["day9" "part2"] (println (day9/part2 25 (slurp file)))
-                                   (println "Unimplemented.")))
-      :else (println "Unknown command. Usage:\n" usage summary))))
+    (if (cond
+          (get options :help) (do (println usage summary) true)
+          (== 3 (count arguments)) (let [[day part file] arguments]
+                                     (if-let [f (resolve (symbol (str "aoc-clj.2020." day "/" part)))]
+                                       (let [result (if (get options :measure)
+                                                      (time (f (slurp file)))
+                                                      (f (slurp file)))]
+                                         (do (println result) result))
+                                       (println (str day " is unimplemented. Usage:\n"))))
+          :else (do (println "Unknown command. Usage:\n") false))
+      (System/exit 0)
+      (do ((println usage summary) (System/exit 1))))))

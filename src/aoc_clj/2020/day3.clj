@@ -30,16 +30,16 @@
 
 (defn part1
   "Solves part 1."
-  [filepath]
-  (solve 1 3 (clojure.string/split-lines (slurp filepath))))
+  [input]
+  (solve 1 3 (clojure.string/split-lines input)))
 
 (defn part2
   "Solves part 2."
-  [filepath]
+  [input]
   (*
-   (solve 1 1 (clojure.string/split-lines (slurp filepath)))
-   (solve 1 3 (clojure.string/split-lines (slurp filepath)))
-   (solve 1 5 (clojure.string/split-lines (slurp filepath)))
-   (solve 1 7 (clojure.string/split-lines (slurp filepath)))
-   (solve 2 1 (clojure.string/split-lines (slurp filepath))))
+   (solve 1 1 (clojure.string/split-lines input))
+   (solve 1 3 (clojure.string/split-lines input))
+   (solve 1 5 (clojure.string/split-lines input))
+   (solve 1 7 (clojure.string/split-lines input))
+   (solve 2 1 (clojure.string/split-lines input)))
   )
