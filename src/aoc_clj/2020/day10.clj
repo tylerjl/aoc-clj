@@ -21,16 +21,16 @@
        (vals)
        (apply *)))
 
-(def bag-lookup (memoize valid-connections))
-
-(defn valid-connections
-  [bag index]
-  (cond
-    (<= index 0) 1
-    :else (let [connections (set/intersection bag (set (range (- index 3) index)))]
-            (apply + (map #(bag-lookup bag %) connections)))))
+(def valid-connections
+  (memoize
+   (fn [bag index]
+     (cond
+       (<= index 0) 1
+       :else (apply + (for [adj (set/intersection bag (set (range (- index 3) index)))]
+                       (#(valid-connections bag adj))))))))
 
 (defn part2
   [input]
   (let [plugs (shape input)]
-    (bag-lookup (set (butlast plugs)) (last plugs))))
+    (->> (last plugs)
+         (valid-connections (set (butlast plugs))))))
