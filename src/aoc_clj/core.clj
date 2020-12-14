@@ -9,7 +9,8 @@
             [aoc-clj.2020.day7]
             [aoc-clj.2020.day8]
             [aoc-clj.2020.day9]
-            [aoc-clj.2020.day10])
+            [aoc-clj.2020.day10]
+            [aoc-clj.2020.day11])
   (:gen-class))
 
 (def cli-opts
