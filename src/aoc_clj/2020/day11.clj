@@ -14,15 +14,16 @@
                          (map-indexed vector cs)))))
          (flatten)
          (partition 2)
-         (into #{}))))
+         (#(zipmap % (repeat false))))))
 
 (def neighbors
-  (memoize (fn [point]
-             (let [x (first point)
-                   y (second point)]
-               (into #{}
-                     (partition 2 (list (inc x) y (inc x) (dec y) x (dec y) (dec x) (dec y)
-                                        (dec x) y (dec x) (inc y) x (inc y) (inc x) (inc y))))))))
+  (memoize
+   (fn [point]
+     (let [x (first point)
+           y (second point)]
+       (set (partition
+             2 (list (inc x) y (inc x) (dec y) x (dec y) (dec x) (dec y)
+                     (dec x) y (dec x) (inc y) x (inc y) (inc x) (inc y))))))))
 
 (def visible-neighbors
   (fn [observer candidate]
@@ -34,29 +35,33 @@
        (= (- x (first candidate)) (- y (second candidate)))))))
 
 (def step-seating
-  (fn [pred myfilter unoccupied occupied]
-    (reduce (partial (fn [seated [new-unocc new-occ] empty-seat]
-                       (let [adjacent (count (myfilter seated empty-seat))]
-                         (if (pred adjacent)
-                           (list new-unocc (conj new-occ empty-seat))
-                           (list (conj new-unocc empty-seat) new-occ))))
-                     occupied)
-            (list #{} #{}) unoccupied)))
-
-(def step
-  (fn [crowded pred unoccupied occupied]
-    (let [[new-unoccupied new-occupied] (step-seating #(= 0 %) pred unoccupied occupied)
-          [x y] (step-seating #(< % crowded) pred occupied occupied)]
-      (list (set/union new-unoccupied x) (set/union new-occupied y)))))
+  (fn [crowded f seats]
+    (into {}
+          (map
+           (fn [seat]
+             (let [adjacent (f (remove #(= (first seat) (first %)) seats) seat)]
+               (cond
+                 (= 0 (count adjacent)) (vector (first seat) true)
+                 (>= (count adjacent) crowded) (vector (first seat) false)
+                 :else seat)))
+              seats))))
 
 (def solve
   (fn [crowded pred input]
-    (loop [unoccupied (shape input)
-           occupied #{}]
-      (let [[new-unocc new-occ] (step crowded pred unoccupied occupied)]
-        (if (and (= unoccupied new-unocc) (= occupied new-occ))
-          (count occupied)
-          (recur new-unocc new-occ))))))
+    (loop [seating (shape input)]
+      (let [new-seating (step-seating crowded pred seating)]
+        (if (= seating new-seating)
+          (count (filter second seating))
+          (recur new-seating))))))
+
+(def part1-pred
+  (fn [coll seat]
+    (let [occupied-seats (set (map first (filter second coll)))]
+      (set/intersection occupied-seats (neighbors (first seat))))))
+
+(def part1
+  "Solves part 1."
+  (fn [input] (solve 4 part1-pred input)))
 
 (def pcenter
   (fn [origin point]
@@ -84,10 +89,6 @@
                     (filter (partial
                              (fn [pt candidate]
                                (visible-neighbors pt candidate)) point) coll))))))
-
-(def part1
-  "Solves part 1."
-  (fn [input] (solve 4 #(set/intersection (neighbors %2) %1) input)))
 
 (def part2
   "Solves part 2."
