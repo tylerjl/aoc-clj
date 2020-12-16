@@ -26,13 +26,14 @@
                      (dec x) y (dec x) (inc y) x (inc y) (inc x) (inc y))))))))
 
 (def visible-neighbors
-  (fn [observer candidate]
-    (let [x (first observer)
-          y (second observer)]
-      (or
-       (= x (first candidate))
-       (= y (second candidate))
-       (= (- x (first candidate)) (- y (second candidate)))))))
+  (memoize (fn [observer candidate]
+             (let [x (first observer)
+                   y (second observer)]
+               (or
+                (= x (first candidate))
+                (= y (second candidate))
+                (= (Math/abs (- (first candidate) x))
+                   (Math/abs (- (second candidate) y))))))))
 
 (def step-seating
   (fn [crowded f seats]
@@ -44,7 +45,7 @@
                  (= 0 (count adjacent)) (vector (first seat) true)
                  (>= (count adjacent) crowded) (vector (first seat) false)
                  :else seat)))
-              seats))))
+           seats))))
 
 (def solve
   (fn [crowded pred input]
@@ -64,32 +65,56 @@
   (fn [input] (solve 4 part1-pred input)))
 
 (def pcenter
-  (fn [origin point]
-    (list (- (first point) (first origin)) (- (second point) (second origin)))))
+  (memoize (fn [center-seat seat]
+             (let [point (first seat)
+                   seated (second seat)
+                   origin (first center-seat)]
+               (list (list (- (first point)
+                              (first origin))
+                           (- (second point) (second origin)))
+                     seated)))))
 
 (def cardinal
-  (fn [point]
-    (let [dx (compare (first point) 0)
-          dy (compare (second point) 0)]
-      (cond
-        (and (= 1 dx) (= 0 dy)) 'east
-        (and (= 1 dx) (= -1 dy)) 'southeast
-        (and (= 0 dx) (= -1 dy)) 'south
-        (and (= -1 dx) (= -1 dy)) 'southwest
-        (and (= -1 dx) (= 0 dy)) 'west
-        (and (= -1 dx) (= 1 dy)) 'northwest
-        (and (= 0 dx) (= 1 dy)) 'north
-        (and (= 1 dx) (= 1 dy)) 'northeast))))
+  (memoize (fn [seat]
+             (let [point (first seat)
+                   dx (compare (first point) 0)
+                   dy (compare (second point) 0)]
+               (cond
+                 (and (= 1 dx) (= 0 dy)) 'east
+                 (and (= 1 dx) (= -1 dy)) 'southeast
+                 (and (= 0 dx) (= -1 dy)) 'south
+                 (and (= -1 dx) (= -1 dy)) 'southwest
+                 (and (= -1 dx) (= 0 dy)) 'west
+                 (and (= -1 dx) (= 1 dy)) 'northwest
+                 (and (= 0 dx) (= 1 dy)) 'north
+                 (and (= 1 dx) (= 1 dy)) 'northeast)))))
+
+(def pdist (fn [seat] (let [pt (first seat) x (first pt) y (second pt)]
+                        (Math/sqrt (+ (* x x) (* y y))))))
 
 (def filter-neighbors
-  (fn [coll point]
-    (keys
-     (group-by cardinal
-               (map #(pcenter point %)
-                    (filter (partial
-                             (fn [pt candidate]
-                               (visible-neighbors pt candidate)) point) coll))))))
+  "Take a snapshot of the seating and a test point and return a collection of how many nearby seats are occupied."
+  (fn [coll seat]
+    (->> (filter #(visible-neighbors (first seat) (first %1)) coll)
+         (map #(pcenter seat %))
+         (group-by cardinal)
+         (map #(list (first %) (first (sort-by pdist (second %)))))
+         (filter #(second (second %))))))
 
 (def part2
   "Solves part 2."
   (fn [input] (solve 5 filter-neighbors input)))
+
+(defn render
+  [seat-map]
+  (let [mx (last (sort-by #(first (first %)) seat-map))
+        my (last (sort-by #(second (first %)) seat-map))]
+    (doseq [x (range 0 (inc (first (first mx))))]
+      (do
+        (doseq [y (range 0 (inc (second (first my))))]
+          (let [p (get seat-map (vector x y))]
+            (cond
+              p (print "#")
+              (nil? p) (print ".")
+              :else (print "L"))))
+        (println)))))
