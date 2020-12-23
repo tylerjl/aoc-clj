@@ -11,7 +11,8 @@
             [aoc-clj.2020.day9]
             [aoc-clj.2020.day10]
             [aoc-clj.2020.day11]
-            [aoc-clj.2020.day14])
+            [aoc-clj.2020.day14]
+            [aoc-clj.2020.day15])
   (:gen-class))
 
 (def cli-opts
