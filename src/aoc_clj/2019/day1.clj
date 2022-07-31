@@ -16,8 +16,7 @@
   "Solves part 1."
   [input]
   (->> (split-lines input)
-       (map read-string)
-       (map solve)
+       (map (comp solve read-string))
        (reduce +)))
 
 (defn part2
