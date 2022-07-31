@@ -31,8 +31,8 @@
                                        (let [result (if (get options :measure)
                                                       (time (f (slurp file)))
                                                       (f (slurp file)))]
-                                         (do (println result) result))
+                                         ((println result) result))
                                        (println (str day " is unimplemented. Usage:\n"))))
           :else (do (println "Unknown command. Usage:\n") false))
       (System/exit 0)
-      (do ((println usage summary) (System/exit 1))))))
+      (((println usage summary) (System/exit 1))))))
