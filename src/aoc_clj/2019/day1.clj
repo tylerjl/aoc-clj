@@ -5,21 +5,27 @@
 
 (defn fuel-for
   "Calculate req'd fuel for given mass"
-  [mass] (- (int (floor (/ mass 3))) 2))
+  [mass] (max 0 (- (int (floor (/ mass 3))) 2)))
 
-(defn solve
-  "Performs the actual solution logic."
-  [input]
-  (fuel-for input))
+(defn backfuel
+  "Recursively add fuel"
+  [mass]
+  (loop [fuel (fuel-for mass)
+         acc 0]
+     (if (zero? fuel)
+       acc
+       (recur (fuel-for fuel) (+ fuel acc)))))
 
 (defn part1
   "Solves part 1."
   [input]
   (->> (split-lines input)
-       (map (comp solve read-string))
+       (map (comp fuel-for read-string))
        (reduce +)))
 
 (defn part2
   "Solves part 2."
-  [_]
-  (println "unimplemented"))
+  [input]
+  (->> (split-lines input)
+       (map (comp backfuel read-string))
+       (reduce +)))
