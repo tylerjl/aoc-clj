@@ -1,5 +1,6 @@
 (ns aoc-clj.core
   (:require [clojure.tools.cli :refer [parse-opts]]
+            [aoc-clj.2019.day1]
             [aoc-clj.2020.day1]
             [aoc-clj.2020.day2]
             [aoc-clj.2020.day3]
