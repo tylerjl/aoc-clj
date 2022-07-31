@@ -3,7 +3,7 @@
   :url "https://github.com/tylerjl/aoc-clj"
   :license {:name "GPL3"
             :url "https://choosealicense.com/licenses/gpl-3.0/"}
-  :dependencies [[org.clojure/clojure "1.10.2-alpha4"]
+  :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.clojure/math.combinatorics "0.1.6"]
                  [org.clojure/tools.cli "1.0.194"]]
   :repl-options {:init-ns aoc-clj.core}
