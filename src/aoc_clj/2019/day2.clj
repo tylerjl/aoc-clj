@@ -1,5 +1,6 @@
 (ns aoc-clj.2019.day2
-  (:require [instaparse.core :as insta]))
+  (:require [instaparse.core :as insta]
+            [clojure.math.combinatorics :as combo]))
 
 (def parser
   (insta/parser
@@ -35,5 +36,15 @@
 
 (defn part2
   "Solves part 2."
-  [_]
-  (println "unimplemented"))
+  [input]
+  (let [orig (parse input)
+        nouns (range 0 99)
+        verbs (range 0 99)
+        prod (combo/cartesian-product nouns verbs)]
+    (loop [[n v] (first prod)
+           r (rest prod)]
+      (let [patched (assoc (assoc orig 1 n) 2 v)
+            s (nth (solve patched) 0)]
+        (if (= s 19690720)
+          (+ v (* 100 n))
+          (recur (first r) (rest r)))))))
