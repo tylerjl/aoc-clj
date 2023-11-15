@@ -16,6 +16,7 @@
             [aoc-clj.2020.day14]
             [aoc-clj.2020.day15]
             [aoc-clj.2020.day16]
+            [aoc-clj.2022.day1]
             [aoc-clj.2022.day8])
   (:gen-class))
 
