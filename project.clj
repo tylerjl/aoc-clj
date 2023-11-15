@@ -8,6 +8,7 @@
                  [org.clojure/math.combinatorics "0.1.6"]
                  [org.clojure/tools.cli "1.0.194"]
                  [net.mikera/core.matrix "0.63.0"]
+                 [criterium "0.4.6"]
                  [instaparse "1.4.12"]]
   :repl-options {:init-ns aoc-clj.core}
   :main aoc-clj.core
