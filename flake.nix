@@ -13,15 +13,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, nixpkgs, flake-utils, clj-nix, devshell }:
 
+  outputs = { self, nixpkgs, flake-utils, clj-nix, devshell }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ devshell.overlay ];
+          overlays = [ devshell.overlays.default ];
         };
-        cljpkgs = clj-nix.packages."${system}";
       in
 
       {
@@ -29,25 +28,16 @@
           packages = with pkgs; [ clojure clojure-lsp leiningen ];
         };
 
-        packages = {
-
-          aoc-clj = cljpkgs.mkCljBin {
-            projectSrc = ./.;
-            name = "me.tylerjl/aoc-clj";
-            main-ns = "aoc-clj.core";
-            jdkRunner = pkgs.jdk17_headless;
+        packages = rec {
+          aoc-clj = clj-nix.lib.mkCljApp {
+            inherit pkgs;
+            modules = [{
+              projectSrc = ./.;
+              name = "me.tylerjl/aoc-clj";
+              main-ns = "aoc-clj.core";
+            }];
           };
-
-          aoc-jdk = cljpkgs.customJdk {
-            cljDrv = self.packages."${system}".aoc-clj;
-            locales = "en";
-          };
-
-          aoc-graal = cljpkgs.mkGraalBin {
-            cljDrv = self.packages."${system}".aoc-clj;
-          };
-
+          default = aoc-clj;
         };
       });
-
 }
