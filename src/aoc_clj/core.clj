@@ -18,7 +18,8 @@
             [aoc-clj.2020.day15]
             [aoc-clj.2020.day16]
             [aoc-clj.2022.day1]
-            [aoc-clj.2022.day8])
+            [aoc-clj.2022.day8]
+            [aoc-clj.2023.day1])
   (:gen-class))
 
 (def cli-opts
@@ -47,4 +48,6 @@
           (println (str day " is unimplemented. Usage:\n") usage)))
       ;; Otherwise, print help
       :else
-      (println "Unknown command. Usage:\n" summary))))
+      (println "Unknown command. Usage:\n" summary)))
+  ;; Potential cleanup
+  (shutdown-agents))
