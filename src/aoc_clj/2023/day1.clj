@@ -1,5 +1,6 @@
 (ns aoc-clj.2023.day1
-  (:require [clojure.string :refer [split-lines]]
+  (:require [aoc-clj.utils]
+            [clojure.string :refer [split-lines]]
             [clojure.core.reducers :refer [fold]]
             [instaparse.core :as insta]
             [jasentaa.monad :as m]
@@ -10,16 +11,8 @@
 
 (declare parse-1)
 
-(defn- digit? [^Character c]
-  (Character/isDigit c))
-
 (defn- letter? [^Character c]
   (Character/isLetter c))
-
-(def parse-digit
-  (m/do*
-    (x <- (token (sat digit?)))
-    (m/return (- (byte (strip-location x)) (byte \0)))))
 
 (def parse-letter (sat letter?))
 
@@ -32,7 +25,7 @@
     (_ <- d)
     (m/return r)))
 
-(def parse-1 (around parse-letters (separated-by parse-digit parse-letters)))
+(def parse-1 (around parse-letters (separated-by aoc-clj.utils/parse-digit parse-letters)))
 
 (def a
   (insta/parser
