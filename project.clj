@@ -13,6 +13,7 @@
                  [instaparse "1.5.0"]]
   :repl-options {:init-ns aoc-clj.core}
   :main aoc-clj.core
+  :jvm-opts ["-Xss512M"]
   :plugins [[io.taylorwood/lein-native-image "0.3.1"]]
   :target-path "target/%s"
   :native-image {:jvm-opts ["-Dclojure.compiler.direct-linking=true"]

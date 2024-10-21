@@ -22,53 +22,59 @@
     (slots <- (separated-by aoc-clj.utils/parse-number (b/match ",")))
     (m/return [springs slots])))
 
-(def solve
-  (memoize (fn [solution springs slots]
-             (match [springs slots]
-                    ;; No more springs to process - at the end of the row - and
-                    ;; we've fulfilled all slots
-                    [([] :seq) ([] :seq)] 1
-                    ;; No more springs to process but remaining unfulfilled
-                    ;; slots
-                    [([] :seq) _] 0
-                    [([:broken & _] :seq) ([] :seq)] 0
-                    ;; Next is a broken followed by a blank space; check and
-                    ;; mark the span
-                    [([:broken spring & rest-springs] :seq) ([slot & rest-slots] :seq)]
+(def expand
+  (memoize (fn [expansion springs slots]
+             (match springs
+                    ;; No other springs to build with
+                    ([] :seq) (if (empty? slots) 1 0)
+                    ;; Next spring is a broken one, and
+                    ([:broken spring & others] :seq)
                     (match spring
-                           :broken (solve (inc solution) (rest springs) slots)
-                           :operational (if (= (inc solution) slot)
-                                          (solve 0 (rest springs) rest-slots)
+                           ;; Following is also broken
+                           :broken (expand (inc expansion) (rest springs) slots)
+                           ;; Following is an operational spring:
+                           ;; this is the one case in which we've
+                           ;; completed the termination of a broken
+                           ;; spring "run"
+                           :operational (if (= (inc expansion) (first slots))
+                                          (expand 0 (rest springs) (rest slots))
                                           0)
+                           ;; Following is a wildcard, split it
                            :unknown
-                           (+ (solve solution (cons :broken (cons :broken rest-springs)) slots)
-                              (solve solution (cons :broken (cons :operational rest-springs)) slots)))
-                    ;; Unknown token
-                    [([:unknown & rest-springs] :seq) _]
-                    (+ (solve solution (cons :broken rest-springs) slots)
-                       (solve solution (cons :operational rest-springs) slots))
-                    ;; Next position is operational?
-                    [([:operational & rest-springs] :seq) _]
-                    (solve 0 rest-springs slots)))))
+                           (+ (expand expansion (cons :broken (cons :broken others)) slots)
+                              (expand expansion (cons :broken (cons :operational others)) slots)))
+                    ;; Next is a wildcard
+                    ([:unknown & others] :seq)
+                    (+ (expand expansion (cons :broken others) slots)
+                       (expand expansion (cons :operational others) slots))
+                    ;; Next is operational
+                    ([:operational & others] :seq)
+                    (expand expansion others slots)))))
 
-(defn arrangement [springs slots]
-  (solve 0 (concat springs '(:operational)) slots))
+(defn solve [springs slots]
+  (expand 0 (apply list (conj (vec springs) :operational)) slots))
 
 (defn part1 [input]
   (->> (split-lines input)
        (pmap (partial p/parse-all parse-12))
-       (pmap (partial apply arrangement))
+       (pmap (partial apply solve))
        (clojure.core.reducers/fold +)))
 
 (defn unfold [springs slots]
-  [(flatten (interpose '(:unknown) (repeat 5 springs)))
+  [(flatten (interpose :unknown (repeat 5 springs)))
    (flatten (repeat 5 slots))])
 
 (defn part2 [input]
   (->> (split-lines input)
        (map (partial p/parse-all parse-12))
        (map (partial apply unfold))
-       (map (partial apply arrangement))
-       (reduce +)))
+       (map (partial apply solve))
+       (clojure.core.reducers/fold +)))
 
-(time (part2 (slurp "resources/2023/day12.txt")))
+(comment
+ (time (part2 "????.######..#####. 1,6,5"))
+
+ (let [input (slurp "resources/2023/day12.txt")]
+   (time (part2 input)))
+
+ (time (part1 "?###???????? 3,2,1")))
