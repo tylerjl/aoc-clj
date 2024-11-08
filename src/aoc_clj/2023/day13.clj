@@ -9,9 +9,6 @@
 (defn str->as-num [n]
   (Integer/parseInt (str->as-bits n) 2))
 
-(defn transpose [& xs]
-  (apply map list xs))
-
 (defn a-prefix? [a b need-flip]
   (match [a b]
          [([] :seq) ([] :seq)] (and true (not need-flip))
@@ -37,7 +34,8 @@
 
 (defn reflect [lines need-flip]
   (or (mirror (map str->as-num (map (partial apply str)
-                                    (apply transpose (map seq lines))))
+                                    (apply aoc-clj.utils/transpose
+                                           (map seq lines))))
               need-flip)
       (* 100 (mirror (map str->as-num lines) need-flip))))
 

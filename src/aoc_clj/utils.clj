@@ -20,3 +20,6 @@
   (m/do*
     (x <- (plus (token (sat digit?))))
     (m/return (read-string (strip-location x)))))
+
+(defn transpose [& xs]
+  (apply map list xs))
