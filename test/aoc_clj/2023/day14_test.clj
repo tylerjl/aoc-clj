@@ -7,3 +7,7 @@
 (deftest part1-test
   (testing "Given example"
     (is (= 136 (part1 day14-sample)))))
+
+(deftest part2-test
+  (testing "Given example"
+    (is (= 64 (part2 day14-sample)))))
