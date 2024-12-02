@@ -23,5 +23,5 @@
     (reduce + (map #(* %1 (get occurrences %1 0)) (first columns)))))
 
 (comment
-  (part1 (slurp "resources/2024/day1.txt"))
-  (part2 (slurp "resources/2024/day1.txt")))
+  (time (part1 (slurp "resources/2024/day1.txt")))
+  (time (part2 (slurp "resources/2024/day1.txt"))))
