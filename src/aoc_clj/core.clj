@@ -26,7 +26,8 @@
             [aoc-clj.2024.day1]
             [aoc-clj.2024.day2]
             [aoc-clj.2024.day3]
-            [aoc-clj.2024.day4])
+            [aoc-clj.2024.day4]
+            [aoc-clj.2024.day5])
   (:gen-class))
 
 (def cli-opts
