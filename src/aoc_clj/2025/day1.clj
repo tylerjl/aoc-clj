@@ -11,17 +11,14 @@
 
 (def parse-1
   (m/do*
-    (direction <- (any-of (u/p-sym \L :left) (u/p-sym \R :right)))
+    (direction <- (any-of (u/p-sym \L -) (u/p-sym \R +)))
     (number <- u/parse-number)
-    (m/return {:d direction :n number})))
+    (m/return {:op direction :n number})))
 
-(def dial (concat (range 100)
-                  (range 100)
-                  (range 100)))
+(def dial (concat (range 100) (range 100) (range 100)))
 
-(defn rotate [{:keys [p z-end z-click]} {:keys [d n]}]
-  (let [op (match d :left - :right +)
-        turn (op p (mod n 100))
+(defn rotate [{:keys [p z-end z-click]} {:keys [op n]}]
+  (let [turn (op p (mod n 100))
         position (nth dial (+ 100 turn))
         full-turns (quot n 100)
         click (if (and (or (neg? turn) (> turn 100))
@@ -48,4 +45,5 @@
 
 (comment
   (part1 (slurp "test/aoc_clj/2025/day1.txt"))
-  (part1 (slurp "resources/2025/day1.txt")))
+  (part1 (slurp "resources/2025/day1.txt"))
+  (part2 (slurp "resources/2025/day1.txt")))
