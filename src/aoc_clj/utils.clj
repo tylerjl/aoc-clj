@@ -1,8 +1,11 @@
 (ns aoc-clj.utils
-  (:require [jasentaa.monad :as m]
-            [jasentaa.position :refer :all]
-            [jasentaa.parser.basic :refer :all]
-            [jasentaa.parser.combinators :refer :all]))
+  (:require
+   [clj-http.client :as client]
+   [clojure.java.io :as io]
+   [jasentaa.monad :as m]
+   [jasentaa.position :refer :all]
+   [jasentaa.parser.basic :refer :all]
+   [jasentaa.parser.combinators :refer :all]))
 
 (defn call
   [func & args]
@@ -23,3 +26,17 @@
 
 (defn transpose [& xs]
   (apply map list xs))
+
+(defn challenge [{:keys [year day]}]
+  (print "Enter session value> ")
+  (flush)
+  (let [session (read-line)
+        path (io/file (System/getenv "PRJ_ROOT")
+                      "resources" (str year) (str "day" day ".txt"))
+        url (str "https://adventofcode.com/" year "/day/" day "/input")
+        r (client/get url {:cookies {"session" {:value session}}})]
+    (if (= (:status r) 200)
+      (do
+        (io/make-parents path)
+        (spit path (:body r)))
+      (println (str "Error getting puzzle input: " (:body r))))))

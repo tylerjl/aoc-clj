@@ -35,6 +35,7 @@
             clojure
             clojure-lsp
             deps-lock
+            just
             leiningen
           ];
         };

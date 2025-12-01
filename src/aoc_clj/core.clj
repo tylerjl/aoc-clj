@@ -1,6 +1,9 @@
 (ns aoc-clj.core
-  (:require [clojure.tools.cli :refer [parse-opts]]
+  (:require [cli-matic.core :refer [run-cmd]]
+            [clojure.string :as s]
             [criterium.core :as criterium]
+            [aoc-clj.utils :refer [challenge]]
+            [aoc-clj.2015.day1]
             [aoc-clj.2019.day1]
             [aoc-clj.2019.day2]
             [aoc-clj.2020.day1]
@@ -36,32 +39,41 @@
             [aoc-clj.2024.day23])
   (:gen-class))
 
-(def cli-opts
-  [["-h" "--help" "Help text"]
-   ["-m" "--measure" "Measure function execution time (without executable startup)"]
-   ["-b" "--bench" "Benchmark the given day/part"]])
-
-(def usage "\n\t<year> <day> <part> <path to challenge input>\n\n")
-
-(defn -main [& args]
-  (let [{:keys [options arguments _ summary]} (parse-opts args cli-opts)]
-    (cond
-      ;; Help
-      (get options :help)
-      (do (println usage summary) true)
-      ;; Asking for a day’s solution
-      (== 4 (count arguments))
-      (let [[year day part file] arguments]
-        (if-let [f (resolve (symbol (str "aoc-clj." year ".day" day "/part" part)))]
-          (let [input (slurp file)]
-            (when (get options :bench)
-              (criterium/quick-bench (f input)))
-            (println (if (get options :measure)
-                       (time (f input))
-                       (f input))))
-          (println (str day " is unimplemented. Usage:\n") usage)))
-      ;; Otherwise, print help
-      :else
-      (println "Unknown command. Usage:\n" summary)))
+(defn solve [{:keys [measure bench year day part input]}]
+  (if-let [f (resolve (symbol (str "aoc-clj." year ".day" day "/part" part)))]
+    (if bench
+      (criterium/quick-bench (f input))
+      (println (if measure (time (f input)) (f input))))
+    (println (str day " is unimplemented.")))
   ;; Potential cleanup
   (shutdown-agents))
+
+(def CONFIGURATION
+  {:app {:command "aoc-clj"
+         :version "1.0.0"
+         :description "Advent of Code solutions in Clojure"}
+   :commands [{:command "solve" :short "s"
+               :description "Solve a puzzle"
+               :opts [{:option "measure" :short "m" :type :with-flag
+                       :as  "Measure function execution time (without executable startup)"}
+                      {:option "bench" :short "b" :type :with-flag
+                       :as "Benchmark the given day/part"}
+                      {:option "year" :short 0 :type :int :default :present
+                       :as "Year of challenge to solve"}
+                      {:option "day" :short 1 :type :int :default :present
+                       :as "Day of challenge to solve"}
+                      {:option "part" :short 2 :type :int :default :present
+                       :as "Part 1 or 2 of solution"}
+                      {:option "input" :short 3 :type :slurp :default :present
+                       :as "Path to file containing puzzle input"}]
+               :runs solve}
+              {:command "download" :short "d"
+               :description "Download a day puzzle input"
+               :opts [{:option "year" :short 0 :type :int :default :present
+                       :as "Year of challenge to retrieve"}
+                      {:option "day" :short 1 :type :int :default :present
+                       :as "Day of challenge to solve"}]
+               :runs challenge}]})
+
+(defn -main [& args]
+  (run-cmd args CONFIGURATION))

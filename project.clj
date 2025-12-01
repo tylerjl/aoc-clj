@@ -3,12 +3,13 @@
   :url "https://github.com/tylerjl/aoc-clj"
   :license {:name "GPL3"
             :url "https://choosealicense.com/licenses/gpl-3.0/"}
-  :dependencies [[org.clojure/clojure "1.12.0"]
+  :dependencies [[org.clojure/clojure "1.12.3"]
                  [org.clojure/core.match "1.1.0"]
                  [org.clojure/math.combinatorics "0.3.0"]
-                 [org.clojure/tools.cli "1.1.230"]
                  [net.mikera/core.matrix "0.63.0"]
                  [rm-hull/jasentaa "0.2.5"]
+                 [clj-http "3.13.1"]
+                 [cli-matic "0.5.4"]
                  [criterium "0.4.6"]
                  [instaparse "1.5.0"]]
   :repl-options {:init-ns aoc-clj.core}
