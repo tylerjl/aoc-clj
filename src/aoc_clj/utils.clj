@@ -3,6 +3,7 @@
    [clj-http.client :as client]
    [clojure.java.io :as io]
    [jasentaa.monad :as m]
+   [jasentaa.parser.basic :as b]
    [jasentaa.position :refer :all]
    [jasentaa.parser.basic :refer :all]
    [jasentaa.parser.combinators :refer :all]))
@@ -23,6 +24,9 @@
   (m/do*
     (x <- (plus (token (sat digit?))))
     (m/return (read-string (strip-location x)))))
+
+(defn p-sym [char sym]
+  (m/do* (token (b/sat (partial = char))) (m/return sym)))
 
 (defn transpose [& xs]
   (apply map list xs))

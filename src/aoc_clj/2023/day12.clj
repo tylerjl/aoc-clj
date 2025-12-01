@@ -9,11 +9,10 @@
 
 (declare parse-12)
 
-(defn p-sym [char sym]
-  (m/do* (token (b/sat (partial = char))) (m/return sym)))
-
 (def p-spring
-  (any-of (p-sym \? :unknown) (p-sym \. :operational) (p-sym \# :broken)))
+  (any-of (aoc-clj.utils/p-sym \? :unknown)
+          (aoc-clj.utils/p-sym \. :operational)
+          (aoc-clj.utils/p-sym \# :broken)))
 
 (def parse-12
   (m/do*
