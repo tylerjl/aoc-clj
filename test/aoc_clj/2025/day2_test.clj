@@ -14,3 +14,7 @@
 (deftest part1-test
   (testing "Given example"
     (is (= 1227775554 (part1 day2-sample)))))
+
+(deftest part2-test
+  (testing "Given example"
+    (is (= 4174379265 (part2 day2-sample)))))
