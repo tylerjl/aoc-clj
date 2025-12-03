@@ -4,23 +4,31 @@
    [clojure.core.reducers :refer [fold]]
    [clojure.string :as s]))
 
-(defn max-jolt [digits]
-  (let [begin (apply max (butlast digits))
-        [_ end] (split-with (comp not (partial = begin)) digits)]
-    [(first end) (apply max (rest end))]))
-
-(defn solve [input]
+(defn parse [input]
   (->> (s/split-lines input)
-       (map (partial map #(Character/digit % 10)))
-       (map max-jolt)
-       (map (comp read-string (partial apply str)))
+       (map (partial map #(Character/digit % 10)))))
+
+(defn max-indexed [n coll]
+  (apply max-key second (reverse (drop-last n (map-indexed vector coll)))))
+
+(defn max-jolt [goal digits]
+  (loop [digits digits
+         total (transient [])]
+    (if (= goal (count total))
+      (persistent! total)
+      (let [[idx digit] (max-indexed (- (dec goal) (count total)) digits)]
+        (recur (drop (inc idx) digits) (conj! total digit))))))
+
+(defn solve [input n]
+  (->> (parse input)
+       (pmap (comp read-string
+                   (partial apply str)
+                   (partial max-jolt n)))
        (fold +)))
 
-(defn part1 [input]
-  (solve input))
+(defn part1 [input] (solve input 2))
 
-(defn part2 [input]
-  (count (s/split-lines input)))
+(defn part2 [input] (solve input 12))
 
 (comment
   (time (part1 (slurp "test/aoc_clj/2025/day3.txt")))

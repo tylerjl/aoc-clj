@@ -10,4 +10,4 @@
 
 (deftest part2-test
   (testing "Given example"
-    (is (= 4 (part2 day3-sample)))))
+    (is (= 3121910778619 (part2 day3-sample)))))
