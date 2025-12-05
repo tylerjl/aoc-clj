@@ -10,6 +10,7 @@
                  [rm-hull/jasentaa "0.2.5"]
                  [clj-http "3.13.1"]
                  [cli-matic "0.5.4"]
+                 [io.helins/interval "1.0.0-beta0"]
                  [criterium "0.4.6"]
                  [instaparse "1.5.0"]]
   :repl-options {:init-ns aoc-clj.core}

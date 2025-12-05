@@ -88,6 +88,16 @@
       "hash": "sha256-7Vh2tzj7zXYdGd03xiyTExP/beuWSi8Nn1NmRKkw9bQ="
     },
     {
+      "mvn-path": "io/helins/interval/1.0.0-beta0/interval-1.0.0-beta0.jar",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-2aidRYjjQKfTKX6pWxLu7TmtWf8d2OR+ZS6oxSewikc="
+    },
+    {
+      "mvn-path": "io/helins/interval/1.0.0-beta0/interval-1.0.0-beta0.pom",
+      "mvn-repo": "https://repo.clojars.org/",
+      "hash": "sha256-ZMaLxgBdWQMsxbwBMWxRS2EbrYaXq/Mz2Ubm7nfwmNQ="
+    },
+    {
       "mvn-path": "io/taylorwood/lein-native-image/0.3.1/lein-native-image-0.3.1.jar",
       "mvn-repo": "https://repo.clojars.org/",
       "hash": "sha256-deI8nWxzwI9jqGQQnhKFOnV92ZHaEYZl2lVQC6cwNrs="
