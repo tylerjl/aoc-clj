@@ -42,7 +42,8 @@
             [aoc-clj.2025.day3]
             [aoc-clj.2025.day4]
             [aoc-clj.2025.day5]
-            [aoc-clj.2025.day6])
+            [aoc-clj.2025.day6]
+            [aoc-clj.2025.day7])
   (:gen-class))
 
 (defn solve [{:keys [measure bench year day part input]}]
